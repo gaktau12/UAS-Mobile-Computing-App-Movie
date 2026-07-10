@@ -5,7 +5,6 @@ import '../models/mock_data.dart';
 class CinemaDetailScreen extends StatefulWidget {
   final Cinema cinema;
 
-  // Menerima data melalui Constructor Parameter (Navigator arguments)
   const CinemaDetailScreen({Key? key, required this.cinema}) : super(key: key);
 
   @override
@@ -19,11 +18,9 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Mengambil 3 film random dan dikunci di initState agar tidak berubah saat ganti tanggal
     _randomMovies = (mockMovies.toList()..shuffle(Random())).take(3).toList();
   }
 
-  // Fungsi Transaksi Bottom Sheet yang terhubung dengan Beranda
   void _tampilkanBottomSheetTransaksi(BuildContext context, Movie movie, String jamTayang) {
     int jumlahTiket = 1;
     final int hargaPerTiket = 50000;
@@ -179,44 +176,26 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
   }
 
   void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF1E272E),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.check_circle, color: Color(0xFF00A294), size: 80),
-              const SizedBox(height: 16),
-              const Text('Pembayaran Berhasil!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00A294),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context); 
-                    Navigator.pop(context); 
-                  },
-                  child: const Text('Cek Tiket di Beranda', style: TextStyle(color: Colors.white)),
-                ),
-              )
-            ],
-          ),
-        );
-      }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 10),
+            Text('Pembayaran Berhasil!', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        backgroundColor: const Color(0xFF00A294),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 3),
+      ),
     );
+    Navigator.pop(context); 
   }
 
   @override
   Widget build(BuildContext context) {
-    // Generate 7 hari ke depan untuk tab tanggal
     final DateTime today = DateTime.now();
     final List<DateTime> dates = List.generate(7, (index) => today.add(Duration(days: index)));
 
@@ -252,8 +231,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            
-            // Horizontal Date Selector
             SizedBox(
               height: 70,
               child: ListView.builder(
@@ -289,8 +266,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            
-            // Filter Row (Cinema XXI)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -304,8 +279,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            
-            // Movie List menggunakan ExpansionTile
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -317,7 +290,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: Theme(
-                    // Menghilangkan garis pembatas default ExpansionTile
                     data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -359,7 +331,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
                           ],
                         ),
                         children: [
-                          // Tampilan saat di-expand (Jadwal Tayang)
                           Align(
                             alignment: Alignment.centerLeft,
                             child: OutlinedButton.icon(
@@ -408,7 +379,6 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
     );
   }
 
-  // Helper untuk Tag (1h 56m, 13+, 2D)
   Widget _buildTag(String text, {bool isWarning = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -427,10 +397,9 @@ class _CinemaDetailScreenState extends State<CinemaDetailScreen> {
     );
   }
 
-  // Helper untuk Tombol Jam Tayang
   Widget _buildTimeSlot(BuildContext context, Movie movie, String time) {
     return SizedBox(
-      width: (MediaQuery.of(context).size.width - 80) / 2, // Layout 2 kolom untuk jam
+      width: (MediaQuery.of(context).size.width - 80) / 2, 
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00A294),

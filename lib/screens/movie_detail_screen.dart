@@ -15,7 +15,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   int _selectedDateIndex = 0;
   bool _isScheduleTab = true;
 
-  // Fungsi Transaksi Bottom Sheet (Dimodifikasi untuk Dark Mode)
   void _tampilkanBottomSheetTransaksi(BuildContext context, Cinema cinema, String jamTayang) {
     int jumlahTiket = 1;
     final int hargaPerTiket = 50000;
@@ -171,47 +170,27 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF1E272E),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.check_circle, color: Color(0xFF00A294), size: 80),
-              const SizedBox(height: 16),
-              const Text('Pembayaran Berhasil!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00A294),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context); 
-                    Navigator.pop(context); 
-                  },
-                  child: const Text('Cek Tiket di Beranda', style: TextStyle(color: Colors.white)),
-                ),
-              )
-            ],
-          ),
-        );
-      }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 10),
+            Text('Pembayaran Berhasil!', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        backgroundColor: const Color(0xFF00A294),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 3),
+      ),
     );
+    Navigator.pop(context); 
   }
 
   @override
   Widget build(BuildContext context) {
-    // Memenuhi syarat maksimal 5 cinema
     final availableCinemas = mockCinemas.take(5).toList();
-    
-    // Men-generate tanggal mulai hari ini
     final DateTime today = DateTime.now();
     final List<DateTime> dates = List.generate(7, (index) => today.add(Duration(days: index)));
 
@@ -221,10 +200,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section dengan Blur Effect
             Stack(
               children: [
-                // Latar Belakang Blur
                 Container(
                   height: 380,
                   decoration: BoxDecoration(
@@ -243,8 +220,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     ),
                   ),
                 ),
-                
-                // Custom App Bar Overlay
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -276,8 +251,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     ),
                   ),
                 ),
-
-                // Play Button & Movie Info
                 Positioned(
                   top: 100,
                   left: 0,
@@ -290,7 +263,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     ),
                   ),
                 ),
-                
                 Positioned(
                   bottom: 0,
                   left: 20,
@@ -321,7 +293,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                 _buildTag('2D'),
                               ],
                             ),
-                            const SizedBox(height: 10), // Padding bawah
+                            const SizedBox(height: 10),
                           ],
                         ),
                       )
@@ -330,10 +302,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 ),
               ],
             ),
-            
             const SizedBox(height: 24),
-            
-            // Tab Schedule & Details
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -366,10 +335,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             ),
             const Divider(color: Colors.grey, height: 1, thickness: 0.5),
             const SizedBox(height: 20),
-
-            // Content berdasarkan Tab yang dipilih
             if (_isScheduleTab) ...[
-              // Horizontal Date Selector
               SizedBox(
                 height: 70,
                 child: ListView.builder(
@@ -404,8 +370,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Filter Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -425,8 +389,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              
-              // Expandable Cinema List
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -434,7 +396,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 itemCount: availableCinemas.length,
                 itemBuilder: (context, index) {
                   final cinema = availableCinemas[index];
-                  // Jarak simulasi
                   final double distance = 8.43 + (index * 2.1); 
                   
                   return Padding(
@@ -500,7 +461,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               ),
               const SizedBox(height: 40),
             ] else ...[
-              // Tampilan Tab Details
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
@@ -515,7 +475,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     );
   }
 
-  // Komponen pembantu untuk Tag (1h 56m, 13+, 2D)
   Widget _buildTag(String text, {bool isWarning = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -533,10 +492,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     );
   }
 
-  // Komponen pembantu untuk tombol Jam Tayang
   Widget _buildTimeSlot(BuildContext context, Cinema cinema, String time) {
     return SizedBox(
-      width: (MediaQuery.of(context).size.width - 80) / 2, // Membagi 2 kolom
+      width: (MediaQuery.of(context).size.width - 80) / 2, 
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00A294),
