@@ -65,8 +65,8 @@ class _BerandaFragmentState extends State<BerandaFragment> {
         elevation: 0,
         title: Row(
           children: const [
-            Text('m•tix ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, letterSpacing: -1, color: Colors.white)),
-            Text('by XXI', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.white)),
+            Text('Go•Tix ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, letterSpacing: -1, color: Colors.white)),
+            Text('by DNA', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.white)),
           ],
         ),
         actions: [

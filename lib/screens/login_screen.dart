@@ -25,8 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('m•tix ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40, letterSpacing: -1, color: Colors.white)),
-                    Text('by XXI', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300, color: Colors.white)),
+                    Text('Go*Tix ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40, letterSpacing: -1, color: Colors.white)),
+                    Text('by DNA', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300, color: Colors.white)),
                   ],
                 ),
                 const SizedBox(height: 8),
