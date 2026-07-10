@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import '../models/mock_data.dart';
 
-class MovieDetailScreen extends StatelessWidget {
+class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
 
   const MovieDetailScreen({Key? key, required this.movie}) : super(key: key);
 
-  void _tampilkanBottomSheetTransaksi(BuildContext context) {
+  @override
+  State<MovieDetailScreen> createState() => _MovieDetailScreenState();
+}
+
+class _MovieDetailScreenState extends State<MovieDetailScreen> {
+  int _selectedDateIndex = 0;
+  bool _isScheduleTab = true;
+
+  // Fungsi Transaksi Bottom Sheet (Dimodifikasi untuk Dark Mode)
+  void _tampilkanBottomSheetTransaksi(BuildContext context, Cinema cinema, String jamTayang) {
     int jumlahTiket = 1;
-    final int hargaPerTiket = 50000; 
+    final int hargaPerTiket = 50000;
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, 
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF1E272E),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -34,66 +45,59 @@ class MovieDetailScreen extends StatelessWidget {
                     child: Container(
                       width: 50,
                       height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      decoration: BoxDecoration(color: Colors.grey[600], borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Detail Pemesanan', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  const Text('Detail Pemesanan', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 20),
                   Row(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(movie.imageAsset, width: 70, height: 100, fit: BoxFit.cover),
+                        child: Image.asset(widget.movie.imageAsset, width: 70, height: 100, fit: BoxFit.cover),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(movie.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(widget.movie.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                             const SizedBox(height: 4),
-                            Text(movie.genre, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                            Text('${cinema.name} • $jamTayang', style: const TextStyle(color: Colors.grey, fontSize: 13)),
                             const SizedBox(height: 12),
-                            Text('Rp $hargaPerTiket / tiket', style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600, fontSize: 16)),
+                            Text('Rp $hargaPerTiket / tiket', style: const TextStyle(color: Color(0xFF00A294), fontWeight: FontWeight.w600, fontSize: 16)),
                           ],
                         ),
                       )
                     ],
                   ),
-                  const Divider(height: 40, thickness: 1),
+                  const Divider(height: 40, thickness: 1, color: Colors.grey),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Jumlah Tiket', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      const Text('Jumlah Tiket', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
                       Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              if (jumlahTiket > 1) {
-                                setModalState(() => jumlahTiket--);
-                              }
+                              if (jumlahTiket > 1) setModalState(() => jumlahTiket--);
                             },
-                            icon: Icon(Icons.remove_circle_outline, color: jumlahTiket > 1 ? Colors.blueAccent : Colors.grey),
+                            icon: Icon(Icons.remove_circle_outline, color: jumlahTiket > 1 ? const Color(0xFF00A294) : Colors.grey),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              color: Colors.grey[100],
+                              color: const Color(0xFF0F171E),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Text('$jumlahTiket', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            child: Text('$jumlahTiket', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                           ),
                           IconButton(
                             onPressed: () {
-                              if (jumlahTiket < 10) { 
-                                setModalState(() => jumlahTiket++);
-                              }
+                              if (jumlahTiket < 10) setModalState(() => jumlahTiket++);
                             },
-                            icon: const Icon(Icons.add_circle_outline, color: Colors.blueAccent),
+                            icon: const Icon(Icons.add_circle_outline, color: Color(0xFF00A294)),
                           ),
                         ],
                       )
@@ -103,16 +107,17 @@ class MovieDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.blue[50],
+                      color: const Color(0xFF0F171E),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF00A294).withOpacity(0.3)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Total Pembayaran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const Text('Total Pembayaran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                         Text(
                           'Rp ${jumlahTiket * hargaPerTiket}', 
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF00A294)),
                         ),
                       ],
                     ),
@@ -124,66 +129,31 @@ class MovieDetailScreen extends StatelessWidget {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: const BorderSide(color: Colors.blueAccent),
+                            side: const BorderSide(color: Color(0xFF00A294)),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           onPressed: () => Navigator.pop(context), 
-                          child: const Text('Batal', style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
+                          child: const Text('Batal', style: TextStyle(fontSize: 16, color: Color(0xFF00A294), fontWeight: FontWeight.bold)),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: const Color(0xFF00A294),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             elevation: 0,
                           ),
                           onPressed: () {
                             riwayatTransaksi.add({
-                              'movie_title': movie.title,
+                              'movie_title': widget.movie.title,
                               'jumlah_tiket': jumlahTiket,
                               'total_harga': jumlahTiket * hargaPerTiket,
-                              'image_asset': movie.imageAsset,
+                              'image_asset': widget.movie.imageAsset,
                             });
-
                             Navigator.pop(context); 
-
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.check_circle, color: Colors.green, size: 80),
-                                      const SizedBox(height: 16),
-                                      const Text('Pembayaran Berhasil!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                      const SizedBox(height: 8),
-                                      Text('Kamu membeli $jumlahTiket tiket ${movie.title}.', textAlign: TextAlign.center),
-                                      const SizedBox(height: 24),
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blueAccent,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context); 
-                                            Navigator.pop(context); 
-                                          },
-                                          child: const Text('Cek Tiket di Beranda', style: TextStyle(color: Colors.white)),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            );
+                            _showSuccessDialog();
                           },
                           child: const Text('Bayar', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
@@ -200,103 +170,382 @@ class MovieDetailScreen extends StatelessWidget {
     );
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E272E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.check_circle, color: Color(0xFF00A294), size: 80),
+              const SizedBox(height: 16),
+              const Text('Pembayaran Berhasil!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00A294),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context); 
+                    Navigator.pop(context); 
+                  },
+                  child: const Text('Cek Tiket di Beranda', style: TextStyle(color: Colors.white)),
+                ),
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Memenuhi syarat maksimal 5 cinema
     final availableCinemas = mockCinemas.take(5).toList();
+    
+    // Men-generate tanggal mulai hari ini
+    final DateTime today = DateTime.now();
+    final List<DateTime> dates = List.generate(7, (index) => today.add(Duration(days: index)));
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 300.0,
-            floating: false,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(movie.title, style: const TextStyle(color: Colors.white, shadows: [Shadow(color: Colors.black87, blurRadius: 10)])),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(movie.imageAsset, fit: BoxFit.cover),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+      backgroundColor: const Color(0xFF0F171E),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section dengan Blur Effect
+            Stack(
+              children: [
+                // Latar Belakang Blur
+                Container(
+                  height: 380,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage(widget.movie.imageAsset), fit: BoxFit.cover),
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.black.withOpacity(0.3), const Color(0xFF0F171E)],
+                        ),
                       ),
+                    ),
+                  ),
+                ),
+                
+                // Custom App Bar Overlay
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.location_on, size: 16, color: Colors.white),
+                                  SizedBox(width: 4),
+                                  Text('JAKARTA', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(icon: const Icon(Icons.search, color: Colors.white), onPressed: () {}),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Play Button & Movie Info
+                Positioned(
+                  top: 100,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                      child: const Icon(Icons.play_arrow, color: Colors.white, size: 32),
+                    ),
+                  ),
+                ),
+                
+                Positioned(
+                  bottom: 0,
+                  left: 20,
+                  right: 20,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(widget.movie.imageAsset, width: 110, height: 160, fit: BoxFit.cover),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(widget.movie.title.toUpperCase(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                            const SizedBox(height: 8),
+                            Text(widget.movie.genre, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                _buildTag('1h 56m'),
+                                const SizedBox(width: 8),
+                                _buildTag('13+', isWarning: true),
+                                const SizedBox(width: 8),
+                                _buildTag('2D'),
+                              ],
+                            ),
+                            const SizedBox(height: 10), // Padding bawah
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Tab Schedule & Details
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => setState(() => _isScheduleTab = true),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: _isScheduleTab ? Colors.white : Colors.grey)),
+                        const SizedBox(height: 8),
+                        if (_isScheduleTab) Container(height: 2, width: 80, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  GestureDetector(
+                    onTap: () => setState(() => _isScheduleTab = false),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: !_isScheduleTab ? Colors.white : Colors.grey)),
+                        const SizedBox(height: 8),
+                        if (!_isScheduleTab) Container(height: 2, width: 60, color: Colors.white),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Chip(
-                        label: Text(movie.genre, style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold)), 
-                        backgroundColor: Colors.blue[50],
-                        side: BorderSide.none,
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 28),
-                          const SizedBox(width: 6),
-                          Text('${movie.rating} / 10', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        ],
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text('Sinopsis', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Text(
-                    movie.description,
-                    style: const TextStyle(fontSize: 16, height: 1.6, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 28),
-                  const Text('Tersedia di Bioskop:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
-                  ...availableCinemas.map((cinema) => Container(
-                        margin: const EdgeInsets.only(bottom: 12),
+            const Divider(color: Colors.grey, height: 1, thickness: 0.5),
+            const SizedBox(height: 20),
+
+            // Content berdasarkan Tab yang dipilih
+            if (_isScheduleTab) ...[
+              // Horizontal Date Selector
+              SizedBox(
+                height: 70,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: dates.length,
+                  itemBuilder: (context, index) {
+                    final date = dates[index];
+                    final bool isSelected = _selectedDateIndex == index;
+                    String dayName = index == 0 ? 'Today' : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][date.weekday - 1];
+                    
+                    return GestureDetector(
+                      onTap: () => setState(() => _selectedDateIndex = index),
+                      child: Container(
+                        width: 60,
+                        margin: const EdgeInsets.only(right: 12),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[200]!),
+                          color: isSelected ? const Color(0xFF00A294) : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ListTile(
-                          leading: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
-                            child: const Icon(Icons.theaters, color: Colors.blueAccent),
-                          ),
-                          title: Text(cinema.name, style: const TextStyle(fontWeight: FontWeight.w500)),
-                          trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(dayName, style: TextStyle(color: isSelected ? Colors.black : Colors.grey, fontSize: 12)),
+                            const SizedBox(height: 4),
+                            Text(date.day.toString().padLeft(2, '0'), style: TextStyle(color: isSelected ? Colors.black : Colors.grey, fontSize: 20, fontWeight: FontWeight.bold)),
+                          ],
                         ),
-                      )),
-                  const SizedBox(height: 100), 
-                ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ),
+              const SizedBox(height: 20),
+              
+              // Filter Row
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(border: Border.all(color: Colors.grey), shape: BoxShape.circle),
+                      child: const Icon(Icons.tune, color: Colors.white, size: 20),
+                    ),
+                    const SizedBox(width: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                      child: const Text('Cinema XXI', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              // Expandable Cinema List
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: availableCinemas.length,
+                itemBuilder: (context, index) {
+                  final cinema = availableCinemas[index];
+                  // Jarak simulasi
+                  final double distance = 8.43 + (index * 2.1); 
+                  
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: ExpansionTile(
+                          backgroundColor: const Color(0xFF1E272E),
+                          collapsedBackgroundColor: const Color(0xFF1E272E),
+                          iconColor: Colors.white,
+                          collapsedIconColor: Colors.white,
+                          title: Row(
+                            children: [
+                              Text(cinema.name.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14)),
+                              const SizedBox(width: 8),
+                              Text('(${distance.toStringAsFixed(2)} km)', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                            ],
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  OutlinedButton.icon(
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(color: Color(0xFF00A294)),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    ),
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.info_outline, color: Color(0xFF00A294), size: 16),
+                                    label: const Text('Cinema info', style: TextStyle(color: Color(0xFF00A294))),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Text('Reguler 2D', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                      Text('Rp50.000', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 12,
+                                    runSpacing: 12,
+                                    children: [
+                                      _buildTimeSlot(context, cinema, '12:15'),
+                                      _buildTimeSlot(context, cinema, '14:30'),
+                                      _buildTimeSlot(context, cinema, '16:45'),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 40),
+            ] else ...[
+              // Tampilan Tab Details
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  widget.movie.description,
+                  style: const TextStyle(fontSize: 16, height: 1.6, color: Colors.white70),
+                ),
+              ),
+            ]
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Komponen pembantu untuk Tag (1h 56m, 13+, 2D)
+  Widget _buildTag(String text, {bool isWarning = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        children: [
+          if (isWarning) const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 14),
+          if (isWarning) const SizedBox(width: 4),
+          Text(text, style: TextStyle(color: isWarning ? Colors.amber : Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.blueAccent,
-        onPressed: () => _tampilkanBottomSheetTransaksi(context),
-        label: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Text('Beli Tiket', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+    );
+  }
+
+  // Komponen pembantu untuk tombol Jam Tayang
+  Widget _buildTimeSlot(BuildContext context, Cinema cinema, String time) {
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - 80) / 2, // Membagi 2 kolom
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF00A294),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(vertical: 12),
         ),
-        icon: const Icon(Icons.local_activity, color: Colors.white),
+        onPressed: () => _tampilkanBottomSheetTransaksi(context, cinema, time),
+        child: Text(time, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
